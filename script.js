@@ -27,6 +27,13 @@ function removeOutliers(array) {
     return array.filter(elem => elem >= lb && elem <= ub);
 }
 
+// This will compute the log prices and add them to each data entry.
+function preprocessData(data) {
+    return data.map(entry => ({
+        ...entry,
+        logPrice: Math.log(entry.price)
+    }));
+}
 /**
  * For each data entry, this function creates an array of past log prices for a given lookback period, exclusive of the
  * log price for the entry. The function assumes that the data belong to the same group (e.g. same NFT collection).
@@ -34,22 +41,21 @@ function removeOutliers(array) {
  * @param {Array} data - A list of data entries, where each entry has properties like blockNumber and logPrice.
  * @param {number} lookback - The lookback period.
  * @returns {Array} - The input data enriched with two additional properties: tradeId and logPricesLookback.
- */
+ */Adjusted!
 function createLookback(data, lookback) {
-    data.sort((a, b) => a.blockNumber - b.blockNumber);
     let result = [];
     for (let idx = 0; idx < data.length; idx++) {
         const row = data[idx];
         let logPrices;
         if (idx === 0) {
-            logPrices = [-42.0];
+            logPrices = [-42.0]; // or any default value for the first data point
         } else {
             const idxStart = Math.max(0, idx - lookback);
             logPrices = data.slice(idxStart, idx).map(entry => entry.logPrice);
         }
         result.push({
             ...row,
-            logPricesLookback: logPrices,  // This is the line that was missed earlier
+            logPricesLookback: logPrices,
             tradeId: idx
         });
     }
@@ -106,3 +112,12 @@ function computeQuantileObs(data, backtest) {
     });
     return sortedData;
 }
+
+fetch('data.json')
+   .then(response => response.json())
+   .then(data => {
+       const processedData = preprocessData(data);
+       const result = createLookback(processedData, 2);
+       console.log(result);
+   })
+   .catch(error => console.error('Error fetching data:', error))
