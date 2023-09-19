@@ -1,3 +1,30 @@
+import {
+  ThirdwebProvider,
+  ConnectWallet,
+  coinbaseWallet,
+  walletConnect,
+  localWallet,
+  paperWallet,
+} from "@thirdweb-dev/react";
+export default function App() {
+  return (
+    <ThirdwebProvider
+      activeChain="polygon"
+      clientId="YOUR_CLIENT_ID"
+      supportedWallets={[
+        coinbaseWallet(),
+        walletConnect(),
+        localWallet(),
+        paperWallet({
+          paperClientId: "YOUR_PAPER_CLIENT_ID",
+        }),
+      ]}
+    >
+      <ConnectWallet theme={"dark"} />
+    </ThirdwebProvider>
+  );
+}
+
 document.getElementById('clickMe').addEventListener('click', function() {
     alert('Button was clicked!');
 });
