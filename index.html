@@ -1,3 +1,30 @@
+import {
+  ThirdwebProvider,
+  ConnectWallet,
+  coinbaseWallet,
+  walletConnect,
+  localWallet,
+  paperWallet,
+} from "@thirdweb-dev/react";
+export default function App() {
+  return (
+    <ThirdwebProvider
+      activeChain="polygon"
+      clientId="YOUR_CLIENT_ID"
+      supportedWallets={[
+        coinbaseWallet(),
+        walletConnect(),
+        localWallet(),
+        paperWallet({
+          paperClientId: "YOUR_PAPER_CLIENT_ID",
+        }),
+      ]}
+    >
+      <ConnectWallet theme={"dark"} />
+    </ThirdwebProvider>
+  );
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +36,7 @@
 <body>
     <header>
         <h1>Welcome to My Website!</h1>
+        
     </header>
 
     <main>
